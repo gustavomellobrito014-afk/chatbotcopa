@@ -1,0 +1,9 @@
+[project]
+name = "world-cup-gpt-model"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = [
+    "flask>=3.0,<4",
+    "groq>=0.31",
+    "python-dotenv>=1.0,<2",
+]

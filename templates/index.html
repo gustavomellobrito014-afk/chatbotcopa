@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#04110c">
+  <title>WORLD CUP GPT</title>
+
+  <!-- CSS separado -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="background-scene" aria-hidden="true">
+    <div class="stadium-glow stadium-glow-left"></div>
+    <div class="stadium-glow stadium-glow-right"></div>
+
+    <div class="stadium">
+      <div class="stands stands-back"></div>
+      <div class="stands stands-front"></div>
+      <div class="stadium-lights">
+        <span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+
+    <div class="field-scene">
+      <div class="field">
+        <div class="field-half-line"></div>
+        <div class="field-center-circle"></div>
+        <div class="field-center-dot"></div>
+        <div class="penalty-area left"></div>
+        <div class="penalty-area right"></div>
+        <div class="goal left"></div>
+        <div class="goal right"></div>
+      </div>
+    </div>
+
+    <div class="trophy-scene">
+      <div class="trophy-aura aura-one"></div>
+      <div class="trophy-aura aura-two"></div>
+
+      <svg class="trophy" viewBox="0 0 260 350" role="img" aria-label="Troféu dourado animado">
+        <defs>
+          <linearGradient id="gold" x1="0" x2="1">
+            <stop offset="0%" stop-color="#6f4708"/>
+            <stop offset="15%" stop-color="#ffd971"/>
+            <stop offset="35%" stop-color="#fff0a4"/>
+            <stop offset="54%" stop-color="#c88f16"/>
+            <stop offset="72%" stop-color="#ffe48b"/>
+            <stop offset="100%" stop-color="#6b4509"/>
+          </linearGradient>
+
+          <filter id="goldGlow">
+            <feGaussianBlur stdDeviation="5" result="blur"/>
+            <feMerge>
+              <feMergeNode in="blur"/>
+              <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+          </filter>
+        </defs>
+
+        <g fill="url(#gold)" filter="url(#goldGlow)">
+          <ellipse cx="130" cy="62" rx="56" ry="43"/>
+          <path d="M80 74 C43 70 31 111 54 138 C66 151 85 152 100 142 L92 119 C80 127 68 124 61 115 C55 104 61 89 82 89 Z"/>
+          <path d="M180 74 C217 70 229 111 206 138 C194 151 175 152 160 142 L168 119 C180 127 192 124 199 115 C205 104 199 89 178 89 Z"/>
+          <path d="M95 86 C95 132 103 165 118 190 H142 C157 165 165 132 165 86 Z"/>
+          <path d="M118 184 H142 L151 230 H109 Z"/>
+          <rect x="97" y="228" width="66" height="18" rx="8"/>
+          <path d="M87 246 H173 L191 296 H69 Z"/>
+          <rect x="59" y="293" width="142" height="24" rx="8"/>
+        </g>
+      </svg>
+
+      <div class="trophy-shadow"></div>
+    </div>
+
+    <div id="particles"></div>
+  </div>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-logo">🏆</div>
+
+        <div class="brand-copy">
+          <strong>WORLD CUP GPT</strong>
+          <span>Especialista em Copas</span>
+        </div>
+      </div>
+
+      <button id="newChatBtn" class="new-chat-btn">
+        <span>＋</span>
+        Nova conversa
+      </button>
+
+      <section class="sidebar-section">
+        <p class="section-title">EXPLORAR</p>
+
+        <button class="side-option" data-question="Quem ganhou a Copa do Mundo de 2002?">
+          <span>🏆</span>
+          Campeões
+        </button>
+
+        <button class="side-option" data-question="Quais são as seleções mais históricas das Copas do Mundo?">
+          <span>🌎</span>
+          Seleções
+        </button>
+
+        <button class="side-option" data-question="Quais jogadores mais marcaram a história das Copas do Mundo?">
+          <span>⭐</span>
+          Jogadores
+        </button>
+
+        <button class="side-option" data-question="Quem são os maiores artilheiros das Copas do Mundo?">
+          <span>🥅</span>
+          Artilheiros
+        </button>
+
+        <button class="side-option" data-question="Quais foram os jogos mais históricos das Copas do Mundo?">
+          <span>🔥</span>
+          Jogos históricos
+        </button>
+      </section>
+
+      <section class="sidebar-section">
+        <p class="section-title">EDIÇÃO DA COPA</p>
+
+        <select id="yearSelect">
+          <option value="">Todas as Copas</option>
+          <option>1930</option>
+          <option>1934</option>
+          <option>1938</option>
+          <option>1950</option>
+          <option>1954</option>
+          <option>1958</option>
+          <option>1962</option>
+          <option>1966</option>
+          <option>1970</option>
+          <option>1974</option>
+          <option>1978</option>
+          <option>1982</option>
+          <option>1986</option>
+          <option>1990</option>
+          <option>1994</option>
+          <option>1998</option>
+          <option>2002</option>
+          <option>2006</option>
+          <option>2010</option>
+          <option>2014</option>
+          <option>2018</option>
+          <option>2022</option>
+        </select>
+      </section>
+
+      <section class="sidebar-section">
+        <p class="section-title">SELEÇÕES</p>
+
+        <div class="team-grid">
+          <button data-team="Brasil">🇧🇷 Brasil</button>
+          <button data-team="Argentina">🇦🇷 Argentina</button>
+          <button data-team="Alemanha">🇩🇪 Alemanha</button>
+          <button data-team="França">🇫🇷 França</button>
+          <button data-team="Itália">🇮🇹 Itália</button>
+          <button data-team="Uruguai">🇺🇾 Uruguai</button>
+        </div>
+      </section>
+
+      <div class="sidebar-card">
+        <span>🏆 História desde 1930</span>
+        <span>⚽ Somente futebol</span>
+        <span>🌎 Copa do Mundo</span>
+      </div>
+
+      <button id="clearHistoryBtn" class="clear-history-btn">
+        Limpar histórico
+      </button>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <button id="menuBtn" class="menu-btn" aria-label="Abrir menu">
+          ☰
+        </button>
+
+        <div class="topbar-title">
+          <strong>🏆 WORLD CUP GPT</strong>
+          <span>A inteligência das Copas do Mundo</span>
+        </div>
+
+        <div class="local-status" id="serverStatus">
+          <i></i>
+          <span>VERIFICANDO</span>
+        </div>
+      </header>
+
+      <section class="chat-area" id="chatArea">
+        <div class="welcome" id="welcome">
+          <div class="hero-chip">
+            ⚽ WORLD CUP INTELLIGENCE
+          </div>
+
+          <h1>
+            A história da Copa do Mundo,
+            <span>em um só lugar.</span>
+          </h1>
+
+          <p>
+            Explore campeões, seleções, finais, jogadores, recordes,
+            artilheiros e grandes momentos do futebol mundial.
+          </p>
+
+          <div class="quick-prompts">
+            <button data-question="Quem ganhou a Copa do Mundo de 2002?">
+              <span>🏆</span>
+              <div>
+                <strong>Copa de 2002</strong>
+                <small>Quem foi campeão?</small>
+              </div>
+            </button>
+
+            <button data-question="Como foi a final da Copa do Mundo de 2022?">
+              <span>🔥</span>
+              <div>
+                <strong>Final de 2022</strong>
+                <small>Argentina x França</small>
+              </div>
+            </button>
+
+            <button data-question="Qual seleção ganhou mais Copas do Mundo?">
+              <span>🌎</span>
+              <div>
+                <strong>Mais títulos</strong>
+                <small>Ranking histórico</small>
+              </div>
+            </button>
+
+            <button data-question="Me fale sobre o Brasil na Copa do Mundo de 2002.">
+              <span>🇧🇷</span>
+              <div>
+                <strong>Brasil 2002</strong>
+                <small>O pentacampeonato</small>
+              </div>
+            </button>
+
+            <button data-question="Quem são os maiores artilheiros da história das Copas?">
+              <span>🥅</span>
+              <div>
+                <strong>Artilheiros</strong>
+                <small>Recordes de gols</small>
+              </div>
+            </button>
+
+            <button data-question="Conte a história da Copa do Mundo de 2014.">
+              <span>📅</span>
+              <div>
+                <strong>Copa de 2014</strong>
+                <small>A edição no Brasil</small>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <div class="messages" id="messages"></div>
+
+        <div class="typing hidden" id="typing">
+          <div class="assistant-avatar">🏆</div>
+
+          <div class="typing-content">
+            <strong>WORLD CUP GPT está analisando...</strong>
+
+            <div class="typing-dots">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="composer-area">
+        <div class="composer">
+          <textarea
+            id="messageInput"
+            rows="1"
+            maxlength="1500"
+            placeholder="Pergunte sobre a história das Copas do Mundo..."
+          ></textarea>
+
+          <button id="sendBtn" aria-label="Enviar mensagem">
+            ➤
+          </button>
+        </div>
+
+        <small>
+          WORLD CUP GPT • Enter envia • Shift + Enter pula linha
+        </small>
+      </footer>
+    </main>
+  </div>
+
+  <!-- JavaScript separado -->
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
